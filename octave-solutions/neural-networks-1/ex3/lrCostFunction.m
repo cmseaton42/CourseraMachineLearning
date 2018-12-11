@@ -38,6 +38,18 @@ grad = zeros(size(theta));
 
 
 
+z = X * theta;
+h = sigmoid(z);
+
+J = (1 / m) * (-y' * log(h) - (1 - y)' * log(1 - h));
+J = J + (lambda / (2 * m)) * ((theta' * theta) - theta(1)^2);
+
+grad = (1 / m) * (X' * (h - y));
+
+zeroFirst = ones(length(grad), 1);
+zeroFirst(1) = 0;
+
+grad = grad + ((lambda / m) * theta .* zeroFirst);
 
 
 
