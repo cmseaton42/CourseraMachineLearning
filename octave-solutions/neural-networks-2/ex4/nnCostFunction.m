@@ -62,14 +62,44 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+# Forward Propagate and Cache Values
+A1 = [ones(m, 1) X];
 
+z2 = A1 * Theta1';
+A2 = sigmoid(z2);
+A2 = [ones(m, 1), A2];
 
+z3 = A2 * Theta2';
+A3 = sigmoid(z3);
 
+# Calculate Cost 2/ Ridge Regularization (l2)
+I = eye(num_labels);
+Y = I(y,:);
 
+J_mat = -Y .* log(A3) - (1 - Y) .* log(1 - A3);
 
+J = (1.0 / m) * sum(sum(J_mat));
 
+l2 = (lambda / (2 * m)) * (sum(sum(Theta1(:, 2:end).^2)) + sum(sum(Theta2(:, 2:end).^2)));
 
+J += l2;
 
+# Perform Back Propagation
+D3 = A3 - Y;
+
+D2 = D3 * Theta2(:, 2:end) .* sigmoidGradient(z2);
+
+Theta1_grad = (1.0 / m) * D2' * A1;
+Theta2_grad = (1.0 / m) * D3' * A2;
+
+Theta1(:, 1) = 0;
+Theta2(:, 1) = 0;
+
+Theta1 *= (lambda / m);
+Theta2 *= (lambda / m);
+
+Theta1_grad += Theta1;
+Theta2_grad += Theta2;
 
 
 
